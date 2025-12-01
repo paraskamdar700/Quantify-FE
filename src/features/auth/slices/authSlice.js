@@ -1,31 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// 1. HELPER FUNCTION: Try to load user from local storage safely
+// Helper to load user for UI persistence (e.g., Name, Avatar)
 const loadUserFromStorage = () => {
   try {
     const serializedUser = localStorage.getItem('user');
-    if (serializedUser === null) {
-      return null;
-    }
-    return JSON.parse(serializedUser);
+    return serializedUser ? JSON.parse(serializedUser) : null;
   } catch (err) {
     return null;
   }
 };
 
-const loadTokenFromStorage = () => {
-    return localStorage.getItem('token') || null;
-}
-
-// 2. DEFINE INITIAL STATE based on LocalStorage
-const token = loadTokenFromStorage();
 const user = loadUserFromStorage();
 
 const initialState = {
-  // If a token exists in storage, we assume they are logged in (until API rejects it)
-  isAuthenticated: !!token, 
+  isAuthenticated: !!user, // If we have user data, assume logged in (Optimistic UI)
   user: user,
-  token: token, 
 };
 
 const authSlice = createSlice({
@@ -33,23 +22,19 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
-      // payload should look like: { user: { name: '...', email: '...' }, token: 'xyz123' }
+      // payload is just { user: ... }
       state.isAuthenticated = true;
       state.user = action.payload.user;
-      state.token = action.payload.token;
-
-      // 3. WRITE to LocalStorage
-      localStorage.setItem('token', action.payload.token);
+      
+      // Store User Details Only (NOT Token)
       localStorage.setItem('user', JSON.stringify(action.payload.user));
     },
     logout: (state) => {
       state.isAuthenticated = false;
       state.user = null;
-      state.token = null;
-
-      // 4. DELETE from LocalStorage
-      localStorage.removeItem('token');
       localStorage.removeItem('user');
+      // Note: We cannot delete HttpOnly cookies from JS. 
+      // The API call to /auth/logout in authApi.js handles that.
     },
   },
 });

@@ -10,7 +10,8 @@ import {
   Settings, 
   LogOut 
 } from 'lucide-react';
-import { logout } from '../../features/auth/slices/authSlice'; // 2. Import logout action
+import { logout } from '../../features/auth/slices/authSlice.js'; // 2. Import logout action
+import { authApi } from '../../features/auth/api/authApi.js';
 
 export const Layout = () => {
   const location = useLocation();
@@ -22,6 +23,12 @@ export const Layout = () => {
 
   // 4. Handle Logout Logic
   const handleLogout = () => {
+
+    authApi.logout() // Call backend to clear cookie
+      .catch((err) => {
+        console.error('Logout API error:', err);
+      });
+
     dispatch(logout()); // Clear Redux + LocalStorage
     navigate('/login'); // Redirect to Login page
   };
