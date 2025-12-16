@@ -6,6 +6,9 @@ import { LandingPage } from '../pages/LandingPage.jsx';
 import { LoginPage } from '../pages/LoginPage.jsx';
 import { SignupPage } from '../pages/SignupPage.jsx'; // Assume you created this
 
+import { InventoryPage } from '../pages/InventoryPage.jsx';
+import CategoryManagement from '../pages/CategoryManagement.jsx';
+
 import { ProtectedRoute } from './ProtectedRoute.jsx';
 
 export const AppRouter = () => {
@@ -29,7 +32,14 @@ export const AppRouter = () => {
           {/* 4. The actual feature pages */}
           <Route path="/dashboard" element={<Placeholder title="Dashboard" />} />
           <Route path="/orders" element={<Placeholder title="Orders List" />} />
-          <Route path="/inventory" element={<Placeholder title="Inventory" />} />
+
+          <Route path="/inventory">
+            <Route index element={<Navigate to="products" replace />} />
+
+            <Route path="products" element={<InventoryPage />} />
+            <Route path="categories" element={<CategoryManagement />} />
+          </Route>
+          
           <Route path="/customers" element={<Placeholder title="Customers" />} />
           <Route path="/reports" element={<Placeholder title="Reports" />} />
           <Route path="/settings" element={<Placeholder title="Settings" />} />
