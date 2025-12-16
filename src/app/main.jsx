@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App.jsx'
 import '../index.css'
 import { store } from './store.js'
-
+import { ThemeProvider } from '../shared/context/ThemeContext.jsx'
 // Create a client
 const queryClient = new QueryClient()
 
@@ -16,7 +16,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       {/* 2. React Query Provider */}
       <QueryClientProvider client={queryClient}>
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
       </QueryClientProvider>
     </Provider>
   </React.StrictMode>,
