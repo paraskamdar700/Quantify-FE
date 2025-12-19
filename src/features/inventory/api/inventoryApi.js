@@ -13,6 +13,7 @@ export const inventoryApi = {
 
     const { data } = await apiClient.get(`/stock/get-stock?${params.toString()}`);
     // Return the whole data object { stockItems: [], pagination: {} }
+    console.log("Inventory API - getStock response:", data);  
     return data.data; 
   },
 
