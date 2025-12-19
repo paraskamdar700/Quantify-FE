@@ -6,8 +6,13 @@ import { LandingPage } from '../pages/LandingPage.jsx';
 import { LoginPage } from '../pages/LoginPage.jsx';
 import { SignupPage } from '../pages/SignupPage.jsx'; // Assume you created this
 
+import  OrdersPage  from '../pages/OrdersPage.jsx';
+import  OrderDetailsPage  from '../pages/OrderDetailsPage.jsx';
+import CreateOrderPage from '../pages/CreateOrderPage.jsx';
 import { InventoryPage } from '../pages/InventoryPage.jsx';
 import CategoryManagement from '../pages/CategoryManagement.jsx';
+import CustomerList from '../pages/CustomerList.jsx';
+
 
 import { ProtectedRoute } from './ProtectedRoute.jsx';
 
@@ -31,7 +36,14 @@ export const AppRouter = () => {
           
           {/* 4. The actual feature pages */}
           <Route path="/dashboard" element={<Placeholder title="Dashboard" />} />
-          <Route path="/orders" element={<Placeholder title="Orders List" />} />
+
+          
+          <Route path="/order">
+            <Route index element={<OrdersPage />} />
+            <Route path="create" element={<CreateOrderPage />} /> 
+            <Route path=":orderId" element={<OrderDetailsPage />} />
+          </Route>
+
 
           <Route path="/inventory">
             <Route index element={<Navigate to="products" replace />} />
@@ -40,7 +52,7 @@ export const AppRouter = () => {
             <Route path="categories" element={<CategoryManagement />} />
           </Route>
           
-          <Route path="/customers" element={<Placeholder title="Customers" />} />
+          <Route path="/customers" element={<CustomerList />} />
           <Route path="/reports" element={<Placeholder title="Reports" />} />
           <Route path="/settings" element={<Placeholder title="Settings" />} />
           
@@ -48,7 +60,7 @@ export const AppRouter = () => {
       </Route>
 
       {/* 404 Route */}
-      <Route path="*" element={<div>404 Not Found</div>} />
+      <Route path="*" element={<div>404 Not Found R</div>} />
     </Routes>
   );
 };

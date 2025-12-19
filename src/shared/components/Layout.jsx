@@ -6,7 +6,7 @@ import {
   LayoutDashboard, ShoppingCart, Package, Users, FileText, 
   Settings, LogOut, PanelLeftClose, PanelLeft, Palette, Bell 
 } from 'lucide-react';
-import { logout } from '../../features/auth/slices/authSlice.js';
+// import { logout } from '../../features/auth/slices/authSlice.js';
 import { ThemeSettings } from './ThemeSettings.jsx'; // Import the settings component
 
 export const Layout = () => {
@@ -26,7 +26,7 @@ export const Layout = () => {
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-    { name: 'Orders', path: '/orders', icon: <ShoppingCart size={20} /> },
+    { name: 'Order', path: '/order', icon: <ShoppingCart size={20} /> },
     { 
       name: 'Inventory', 
       path: '/inventory', 
@@ -37,15 +37,16 @@ export const Layout = () => {
       ]
     },
     { name: 'Customers', path: '/customers', icon: <Users size={20} /> },
+    { name: 'Invoices', path: '/invoices', icon: <FileText size={20} /> },
     { name: 'Reports', path: '/reports', icon: <FileText size={20} /> },
   ];
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
       
-      {/* --- SIDEBAR --- */}
+      {/* --- SIDEBAR ---  changet the color of css if you want to change the color of ui layout*/}
       <aside 
-        className={`bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ease-in-out ${
+        className={`bg-white dark:bg-[#282625] border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ease-in-out ${
           isSidebarOpen ? 'w-64' : 'w-20'
         } hidden md:flex`}
       >
@@ -111,13 +112,10 @@ export const Layout = () => {
         </nav>
 
         <div className="p-4 border-t border-gray-100 dark:border-gray-700">
-            <button 
-              onClick={handleLogout} 
-              className={`flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-red-500 w-full px-3 py-2 transition-colors ${!isSidebarOpen ? 'justify-center' : ''}`}
-            >
-                <LogOut size={20} />
-                {isSidebarOpen && <span>Logout</span>}
-            </button>
+            <Link to={'/settings'} className='flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-red-500 w-full px-3 py-2 transition-colors'>
+                <Settings size={20} />
+                {isSidebarOpen && <span>Settings</span>}
+            </Link>
         </div>
       </aside>
 
@@ -136,7 +134,7 @@ export const Layout = () => {
                {isSidebarOpen ? <PanelLeftClose size={20} /> : <PanelLeft size={20} />}
              </button>
              <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-               {navItems.find(i => location.pathname.startsWith(i.path))?.name || 'Dashboard'}
+               {navItems.find(i => location.pathname.startsWith(i.path))?.name || 'Krishna Agencies'}
              </h2>
            </div>
 

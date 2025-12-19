@@ -10,9 +10,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: 'var(--primary-color)', 
-        primary: '#2563eb', // Example brand color
-        secondary: '#64748b',
+        primary: 'var(--primary-color)',
       }
     },
   },
