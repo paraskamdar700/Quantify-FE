@@ -12,7 +12,7 @@ import CreateOrderPage from '../pages/CreateOrderPage.jsx';
 import { InventoryPage } from '../pages/InventoryPage.jsx';
 import CategoryManagement from '../pages/CategoryManagement.jsx';
 import CustomerList from '../pages/CustomerList.jsx';
-
+import SettingsPage from '../features/settings/pages/SettingsPage.jsx';
 
 import { ProtectedRoute } from './ProtectedRoute.jsx';
 
@@ -54,7 +54,7 @@ export const AppRouter = () => {
           
           <Route path="/customers" element={<CustomerList />} />
           <Route path="/reports" element={<Placeholder title="Reports" />} />
-          <Route path="/settings" element={<Placeholder title="Settings" />} />
+          <Route path="/settings" element={<SettingsPage />} />
           
         </Route>
       </Route>
