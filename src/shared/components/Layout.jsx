@@ -4,25 +4,29 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
   LayoutDashboard, ShoppingCart, Package, Users, FileText, 
-  Settings, LogOut, PanelLeftClose, PanelLeft, Palette, Bell 
+  Settings, LogOut, PanelLeftClose, PanelLeft, Palette, Bell ,
 } from 'lucide-react';
 // import { logout } from '../../features/auth/slices/authSlice.js';
 import { ThemeSettings } from './ThemeSettings.jsx'; // Import the settings component
+import { useSettings } from '../../features/settings/hooks/useSettings.js';
 
 export const Layout = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
-
+  
   // --- NEW STATES ---
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isThemeSettingsOpen, setIsThemeSettingsOpen] = useState(false);
-
+  
   const handleLogout = () => {
     dispatch(logout());
     navigate('/login');
   };
+  
+  const{ firmQuery } = useSettings();
+  
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
@@ -42,15 +46,15 @@ export const Layout = () => {
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-darkBackGround text-gray-900 dark:text-darkText transition-colors duration-300">
       
       {/* --- SIDEBAR ---  changet the color of css if you want to change the color of ui layout*/}
       <aside 
-        className={`bg-white dark:bg-[#282625] border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ease-in-out ${
+        className={`bg-white dark:bg-darkLeftSiderBar border-r border-gray-200 dark:border-darkBorder flex flex-col transition-all duration-300 ease-in-out ${
           isSidebarOpen ? 'w-64' : 'w-20'
         } hidden md:flex`}
       >
-        <div className="h-16 flex items-center justify-center border-b border-gray-100 dark:border-gray-700">
+        <div className="h-16 flex items-center justify-center border-b border-gray-100 dark:border-darkBorder px-4">
           {/* Logo Logic: Show full logo if open, icon if closed */}
           {isSidebarOpen ? (
             <span className="text-2xl font-bold" style={{ color: 'var(--primary-color)' }}>Quantify</span>
@@ -59,7 +63,7 @@ export const Layout = () => {
           )}
         </div>
         
-        <nav className="flex-1 px-3 space-y-2 mt-4 overflow-y-auto">
+        <nav className="flex-1 px-3 space-y-2 mt-4 overflow-y-auto ">
           {navItems.map((item) => {
             const isActive = location.pathname.startsWith(item.path);
 
@@ -69,7 +73,7 @@ export const Layout = () => {
                   to={item.path}
                   className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative ${
                     isActive 
-                      ? 'bg-blue-50 dark:bg-gray-700 text-[var(--primary-color)] font-medium' 
+                      ? 'bg-blue-50 dark:bg-gray-700 text-pureWhite font-medium' 
                       : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                   } ${!isSidebarOpen ? 'justify-center' : ''}`}
                 >
@@ -123,7 +127,7 @@ export const Layout = () => {
       <div className="flex-1 flex flex-col overflow-hidden relative">
         
         {/* --- NAVBAR --- */}
-        <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6 transition-colors duration-300">
+        <header className="h-16 bg-white dark:bg-pureBlack border-b border-gray-200 dark:border-darkBorder flex items-center justify-between px-6 transition-colors duration-300">
            
            {/* Left: Sidebar Toggle & Title */}
            <div className="flex items-center gap-4">
@@ -133,8 +137,8 @@ export const Layout = () => {
              >
                {isSidebarOpen ? <PanelLeftClose size={20} /> : <PanelLeft size={20} />}
              </button>
-             <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-               {navItems.find(i => location.pathname.startsWith(i.path))?.name || 'Krishna Agencies'}
+             <h2 className="text-xl font-sans font-semibold text-gray-800 dark:text-white">
+               {firmQuery.data?.[0]?.firm_name || "Loading Name..."}
              </h2>
            </div>
 
@@ -176,7 +180,7 @@ export const Layout = () => {
         </header>
 
         {/* --- PAGE CONTENT --- */}
-        <main className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <main className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-darkBackGround transition-colors duration-300">
           <Outlet />
         </main>
       </div>
