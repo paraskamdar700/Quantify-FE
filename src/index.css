@@ -2,8 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root {
-  height: 100%;
-  background-color: #f3f4f6; /* Light gray background */
+html {
+  scroll-behavior: smooth;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+  background-color: #f3f4f6;
+}
+
+/* ──────────────────────────────────
+   Landing Page specific overrides
+   ────────────────────────────────── */
+
+/* Hide scrollbar for smooth visual experience */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom selection color */
+::selection {
+  background-color: #FE4D27;
+  color: white;
+}
