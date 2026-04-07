@@ -1,50 +1,55 @@
 import React from 'react';
-import { DollarSign, ShoppingCart, Users, Package, AlertCircle } from 'lucide-react';
+import { DollarSign, ShoppingCart, AlertCircle, Package } from 'lucide-react';
 
-const StatCard = ({ title, value, subtext, icon: Icon, colorClass }) => (
-  <div className="bg-white font-sans text-{pureWhite} dark:bg-pureBlack p-6 rounded-xl border border-gray-200 dark:border-darkBorder shadow-sm">
+const StatCard = ({ title, value, subtext, icon: Icon, iconColor }) => (
+  <div className="bg-card border border-border rounded-xl p-5 card-hover group">
     <div className="flex justify-between items-start">
-      <div>
-        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</p>
-        <h3 className="text-2xl font-bold mt-2 text-gray-900 dark:text-white">{value}</h3>
+      <div className="space-y-1">
+        <p className="text-sm font-medium text-muted-foreground">{title}</p>
+        <h3 className="text-2xl font-bold text-card-foreground tracking-tight">{value}</h3>
       </div>
-      <div className={`p-3 rounded-lg ${colorClass} bg-opacity-20`}>
-        <Icon size={20} className={colorClass.replace('bg-', 'text-')} />
+      <div
+        className="p-2.5 rounded-lg transition-colors"
+        style={{ backgroundColor: `${iconColor}15` }}
+      >
+        <Icon size={18} style={{ color: iconColor }} />
       </div>
     </div>
-    {subtext && <p className="text-xs text-gray-500 mt-2">{subtext}</p>}
+    {subtext && <p className="text-xs text-muted-foreground mt-2">{subtext}</p>}
   </div>
 );
 
 export const DashboardStatsCards = ({ summary }) => {
   if (!summary) return null;
 
+  const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim() || '#3b82f6';
+
   return (
-    <div className="grid grid-cols-1 font-sans text-white md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <StatCard 
-        title="Total Revenue" 
-        value={`₹${Number(summary.total_revenue).toLocaleString()}`} 
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <StatCard
+        title="Total Revenue"
+        value={`₹${Number(summary.total_revenue).toLocaleString()}`}
         icon={DollarSign}
-        colorClass="bg-green-100 text-green-600"
+        iconColor="#22c55e"
       />
-      <StatCard 
-        title="Total Orders" 
-        value={summary.total_orders} 
+      <StatCard
+        title="Total Orders"
+        value={summary.total_orders}
         icon={ShoppingCart}
-        colorClass="bg-blue-100 text-blue-600"
+        iconColor={primaryColor}
       />
-      <StatCard 
-        title="Pending Payments" 
-        value={`₹${Number(summary.pending_payments?.amount || 0).toLocaleString()}`} 
+      <StatCard
+        title="Pending Payments"
+        value={`₹${Number(summary.pending_payments?.amount || 0).toLocaleString()}`}
         subtext={`${summary.pending_payments?.count || 0} invoices pending`}
         icon={AlertCircle}
-        colorClass="bg-orange-100 text-orange-600"
+        iconColor="#f97316"
       />
-      <StatCard 
-        title="Active Products" 
-        value={summary.total_products} 
+      <StatCard
+        title="Active Products"
+        value={summary.total_products}
         icon={Package}
-        colorClass="bg-purple-100 text-purple-600"
+        iconColor="#8b5cf6"
       />
     </div>
   );
