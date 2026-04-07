@@ -2,6 +2,103 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════
+   SHADCN-STYLE CSS VARIABLES
+   These power the entire app's color system.
+   The theme context sets --primary-color dynamically.
+   ═══════════════════════════════════════════════ */
+
+@layer base {
+  :root {
+    /* Page */
+    --background: #f9fafb;
+    --foreground: #09090b;
+
+    /* Card */
+    --card: #ffffff;
+    --card-foreground: #09090b;
+
+    /* Muted */
+    --muted: #f4f4f5;
+    --muted-foreground: #71717a;
+
+    /* Borders */
+    --border: #e4e4e7;
+
+    /* Sidebar */
+    --sidebar-bg: #ffffff;
+    --sidebar-border: #e4e4e7;
+    --sidebar-muted: #f4f4f5;
+    --sidebar-foreground: #09090b;
+    --sidebar-foreground-muted: #71717a;
+
+    /* Header */
+    --header-bg: #ffffff;
+    --header-border: #e4e4e7;
+
+    /* Input */
+    --input-border: #e4e4e7;
+    --input-bg: #ffffff;
+
+    /* Accent — derived from primary */
+    --accent: #f4f4f5;
+    --accent-foreground: #18181b;
+
+    /* Destructive */
+    --destructive: #ef4444;
+    --destructive-foreground: #fafafa;
+
+    /* Ring */
+    --ring: #a1a1aa;
+
+    /* Radius */
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Page */
+    --background: #09090b;
+    --foreground: #fafafa;
+
+    /* Card */
+    --card: #0a0a0c;
+    --card-foreground: #fafafa;
+
+    /* Muted */
+    --muted: #18181b;
+    --muted-foreground: #a1a1aa;
+
+    /* Borders */
+    --border: #27272a;
+
+    /* Sidebar */
+    --sidebar-bg: #0a0a0c;
+    --sidebar-border: #1e1e21;
+    --sidebar-muted: #18181b;
+    --sidebar-foreground: #fafafa;
+    --sidebar-foreground-muted: #71717a;
+
+    /* Header */
+    --header-bg: #09090b;
+    --header-border: #27272a;
+
+    /* Input */
+    --input-border: #27272a;
+    --input-bg: #09090b;
+
+    /* Accent */
+    --accent: #27272a;
+    --accent-foreground: #fafafa;
+
+    /* Destructive */
+    --destructive: #7f1d1d;
+    --destructive-foreground: #fafafa;
+
+    /* Ring */
+    --ring: #3f3f46;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -10,11 +107,12 @@ html,
 body,
 #root {
   height: 100%;
-  background-color: #f3f4f6;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 /* ──────────────────────────────────
-   Landing Page specific overrides
+   Utility classes
    ────────────────────────────────── */
 
 /* Hide scrollbar for smooth visual experience */
@@ -26,8 +124,44 @@ body,
   scrollbar-width: none;
 }
 
-/* Custom selection color */
+/* Custom selection color — uses theme primary */
 ::selection {
-  background-color: #FE4D27;
+  background-color: var(--primary-color, #3b82f6);
   color: white;
+}
+
+/* Thin scrollbar for sidebar */
+.thin-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 4px;
+}
+
+/* Shadcn-style card hover */
+.card-hover {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card-hover:hover {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-color, #3b82f6);
+}
+
+/* User dropdown fade */
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.dropdown-animate {
+  animation: dropdownFadeIn 0.15s ease-out;
 }

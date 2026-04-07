@@ -1,186 +1,298 @@
-// src/components/layout/Layout.jsx
-import React, { useState } from 'react';
-import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { 
-  LayoutDashboard, ShoppingCart, Package, Users, FileText, 
-  Settings, LogOut, PanelLeftClose, PanelLeft, Palette, Bell ,
+// src/shared/components/Layout.jsx
+import React, { useState, useEffect, useRef } from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import {
+  LayoutDashboard, ShoppingCart, Package, Users, FileText,
+  Settings, ChevronRight, PanelLeftClose, PanelLeft,
+  Palette, Zap, LogOut, User, ChevronDown, Menu, X,
 } from 'lucide-react';
-// import { logout } from '../../features/auth/slices/authSlice.js';
-import { ThemeSettings } from './ThemeSettings.jsx'; // Import the settings component
+import { ThemeSettings } from './ThemeSettings.jsx';
 import { useSettings } from '../../features/settings/hooks/useSettings.js';
 
 export const Layout = () => {
   const location = useLocation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
-  
-  // --- NEW STATES ---
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isThemeSettingsOpen, setIsThemeSettingsOpen] = useState(false);
-  
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login');
-  };
-  
-  const{ firmQuery } = useSettings();
-  
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  const userDropdownRef = useRef(null);
+  const themeDropdownRef = useRef(null);
+
+  const { firmQuery, logoutMutation } = useSettings();
+
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (userDropdownRef.current && !userDropdownRef.current.contains(e.target)) {
+        setIsUserDropdownOpen(false);
+      }
+      if (themeDropdownRef.current && !themeDropdownRef.current.contains(e.target)) {
+        setIsThemeSettingsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setIsMobileSidebarOpen(false);
+  }, [location.pathname]);
 
   const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-    { name: 'Order', path: '/order', icon: <ShoppingCart size={20} /> },
-    { 
-      name: 'Inventory', 
-      path: '/inventory', 
-      icon: <Package size={20} />,
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Order', path: '/order', icon: ShoppingCart },
+    {
+      name: 'Inventory',
+      path: '/inventory',
+      icon: Package,
       subItems: [
         { name: 'Products', path: '/inventory/products' },
         { name: 'Categories', path: '/inventory/categories' }
       ]
     },
-    { name: 'Customers', path: '/customers', icon: <Users size={20} /> },
-    { name: 'Invoices', path: '/invoices', icon: <FileText size={20} /> },
-    { name: 'Reports', path: '/reports', icon: <FileText size={20} /> },
+    { name: 'Customers', path: '/customers', icon: Users },
+    { name: 'Invoices', path: '/invoices', icon: FileText },
+    { name: 'Reports', path: '/reports', icon: FileText },
   ];
 
-  return (
-    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-darkBackGround text-gray-900 dark:text-darkText transition-colors duration-300">
-      
-      {/* --- SIDEBAR ---  changet the color of css if you want to change the color of ui layout*/}
-      <aside 
-        className={`bg-white dark:bg-darkLeftSiderBar border-r border-gray-200 dark:border-darkBorder flex flex-col transition-all duration-300 ease-in-out ${
-          isSidebarOpen ? 'w-64' : 'w-20'
-        } hidden md:flex`}
-      >
-        <div className="h-16 flex items-center justify-center border-b border-gray-100 dark:border-darkBorder px-4">
-          {/* Logo Logic: Show full logo if open, icon if closed */}
-          {isSidebarOpen ? (
-            <span className="text-2xl font-bold" style={{ color: 'var(--primary-color)' }}>Quantify</span>
-          ) : (
-            <span className="text-2xl font-bold" style={{ color: 'var(--primary-color)' }}>Q</span>
-          )}
+  const SidebarContent = () => (
+    <>
+      {/* Logo */}
+      <div className={`h-14 flex items-center border-b border-sidebar-border px-4 shrink-0 ${isSidebarOpen ? 'justify-start gap-2.5' : 'justify-center'}`}>
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--primary-color)' }}>
+          <Zap size={14} className="text-white" />
         </div>
-        
-        <nav className="flex-1 px-3 space-y-2 mt-4 overflow-y-auto ">
-          {navItems.map((item) => {
-            const isActive = location.pathname.startsWith(item.path);
+        {isSidebarOpen && (
+          <span className="text-base font-bold tracking-tight text-sidebar-foreground">Quantify</span>
+        )}
+      </div>
 
-            return (
-              <div key={item.name}>
-                <Link
-                  to={item.path}
-                  className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors group relative ${
-                    isActive 
-                      ? 'bg-blue-50 dark:bg-gray-700 text-pureWhite font-medium' 
-                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  } ${!isSidebarOpen ? 'justify-center' : ''}`}
-                >
-                  <div style={isActive ? { color: 'var(--primary-color)' } : {}}>{item.icon}</div>
-                  
-                  {isSidebarOpen && <span className="flex-1">{item.name}</span>}
-                  
-                  {/* Tooltip for collapsed mode */}
-                  {!isSidebarOpen && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-50 pointer-events-none">
-                      {item.name}
-                    </div>
-                  )}
-                </Link>
+      {/* Navigation */}
+      <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto thin-scrollbar">
+        {navItems.map((item) => {
+          const isActive = location.pathname.startsWith(item.path);
+          const Icon = item.icon;
 
-                {/* Sub-items: Only show when sidebar is OPEN */}
-                {item.subItems && isActive && isSidebarOpen && (
-                  <div className="ml-10 mt-1 space-y-1 border-l-2 border-gray-100 dark:border-gray-700 pl-2">
-                    {item.subItems.map((subItem) => {
-                      const isSubActive = location.pathname === subItem.path;
-                      return (
-                        <Link
-                          key={subItem.name}
-                          to={subItem.path}
-                          className={`block px-3 py-2 text-sm rounded-md transition-colors ${
-                            isSubActive 
-                              ? 'text-[var(--primary-color)] font-medium bg-blue-50/50 dark:bg-gray-700/50' 
-                              : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
-                          }`}
-                        >
-                          {subItem.name}
-                        </Link>
-                      );
-                    })}
+          return (
+            <div key={item.name}>
+              <Link
+                to={item.path}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 group relative ${
+                  isActive
+                    ? 'text-white'
+                    : 'text-sidebar-foreground-muted hover:text-sidebar-foreground hover:bg-sidebar-muted'
+                } ${!isSidebarOpen ? 'justify-center' : ''}`}
+                style={isActive ? { backgroundColor: 'var(--primary-color)' } : {}}
+              >
+                <Icon size={18} className={isActive ? 'text-white' : ''} />
+
+                {isSidebarOpen && <span className="flex-1">{item.name}</span>}
+
+                {isSidebarOpen && item.subItems && isActive && (
+                  <ChevronRight size={14} className="text-white/60" />
+                )}
+
+                {/* Tooltip for collapsed */}
+                {!isSidebarOpen && (
+                  <div className="absolute left-full ml-2.5 px-2.5 py-1.5 bg-foreground text-background text-xs rounded-md opacity-0 group-hover:opacity-100 whitespace-nowrap z-50 pointer-events-none shadow-lg font-medium">
+                    {item.name}
                   </div>
                 )}
-              </div>
-            );
-          })}
-        </nav>
+              </Link>
 
-        <div className="p-4 border-t border-gray-100 dark:border-gray-700">
-            <Link to={'/settings'} className='flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:text-red-500 w-full px-3 py-2 transition-colors'>
-                <Settings size={20} />
-                {isSidebarOpen && <span>Settings</span>}
-            </Link>
-        </div>
+              {/* Sub-items */}
+              {item.subItems && isActive && isSidebarOpen && (
+                <div className="ml-9 mt-1 space-y-0.5 border-l-2 border-sidebar-border pl-3">
+                  {item.subItems.map((subItem) => {
+                    const isSubActive = location.pathname === subItem.path;
+                    return (
+                      <Link
+                        key={subItem.name}
+                        to={subItem.path}
+                        className={`block px-3 py-1.5 text-sm rounded-md transition-colors ${
+                          isSubActive
+                            ? 'font-medium'
+                            : 'text-sidebar-foreground-muted hover:text-sidebar-foreground'
+                        }`}
+                        style={isSubActive ? { color: 'var(--primary-color)' } : {}}
+                      >
+                        {subItem.name}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+
+      {/* Bottom: Settings */}
+      <div className="px-3 py-3 border-t border-sidebar-border shrink-0">
+        <Link
+          to="/settings"
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-sidebar-foreground-muted hover:text-sidebar-foreground hover:bg-sidebar-muted transition-colors ${
+            !isSidebarOpen ? 'justify-center' : ''
+          } ${location.pathname === '/settings' ? 'bg-sidebar-muted text-sidebar-foreground' : ''}`}
+        >
+          <Settings size={18} />
+          {isSidebarOpen && <span>Settings</span>}
+        </Link>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="flex h-screen overflow-hidden bg-background text-foreground transition-colors duration-200">
+
+      {/* ═══ DESKTOP SIDEBAR ═══ */}
+      <aside
+        className={`bg-sidebar border-r border-sidebar-border flex-col transition-all duration-200 ease-in-out ${
+          isSidebarOpen ? 'w-60' : 'w-[68px]'
+        } hidden md:flex`}
+      >
+        <SidebarContent />
       </aside>
 
-      {/* --- MAIN CONTENT WRAPPER --- */}
-      <div className="flex-1 flex flex-col overflow-hidden relative">
-        
-        {/* --- NAVBAR --- */}
-        <header className="h-16 bg-white dark:bg-pureBlack border-b border-gray-200 dark:border-darkBorder flex items-center justify-between px-6 transition-colors duration-300">
-           
-           {/* Left: Sidebar Toggle & Title */}
-           <div className="flex items-center gap-4">
-             <button 
-               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
-             >
-               {isSidebarOpen ? <PanelLeftClose size={20} /> : <PanelLeft size={20} />}
-             </button>
-             <h2 className="text-xl font-sans font-semibold text-gray-800 dark:text-white">
-               {firmQuery.data?.[0]?.firm_name || "Loading Name..."}
-             </h2>
-           </div>
+      {/* ═══ MOBILE SIDEBAR OVERLAY ═══ */}
+      {isMobileSidebarOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsMobileSidebarOpen(false)} />
+          <aside className="absolute left-0 top-0 h-full w-64 bg-sidebar border-r border-sidebar-border flex flex-col shadow-2xl dropdown-animate">
+            <SidebarContent />
+          </aside>
+        </div>
+      )}
 
-           {/* Right: Actions */}
-           <div className="flex items-center gap-4 relative">
-              
-              {/* Theme Settings Button */}
-              <div className="relative">
-                <button 
-                  onClick={() => setIsThemeSettingsOpen(!isThemeSettingsOpen)}
-                  className={`p-2 rounded-full transition-colors ${isThemeSettingsOpen ? 'bg-gray-100 dark:bg-gray-700 text-[var(--primary-color)]' : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
-                >
-                  <Palette size={20} />
-                </button>
-                
-                {/* --- THEME DROPDOWN COMPONENT --- */}
-                <ThemeSettings 
-                  isOpen={isThemeSettingsOpen} 
-                  onClose={() => setIsThemeSettingsOpen(false)} 
-                />
-              </div>
+      {/* ═══ MAIN CONTENT WRAPPER ═══ */}
+      <div className="flex-1 flex flex-col overflow-hidden">
 
-              <div className="h-8 w-[1px] bg-gray-200 dark:bg-gray-700 mx-1"></div>
+        {/* ═══ HEADER ═══ */}
+        <header className="h-14 bg-header border-b border-header-border flex items-center justify-between px-4 md:px-6 shrink-0">
 
-              {/* User Profile */}
-              <div className="flex items-center gap-3">
-                <div className="text-right hidden sm:block">
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-200">{user?.fullname || 'User'}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Admin</p>
-                </div>
-                <div 
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md"
+          {/* Left: Sidebar toggle + Title */}
+          <div className="flex items-center gap-3">
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+              className="md:hidden p-1.5 rounded-lg hover:bg-muted text-muted-foreground"
+            >
+              {isMobileSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+
+            {/* Desktop collapse toggle */}
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="hidden md:flex p-1.5 rounded-lg hover:bg-muted text-muted-foreground transition-colors"
+            >
+              {isSidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeft size={18} />}
+            </button>
+
+            <div className="h-5 w-px bg-border hidden md:block" />
+
+            <h2 className="text-sm font-semibold text-foreground">
+              {firmQuery.data?.[0]?.firm_name || "Loading..."}
+            </h2>
+          </div>
+
+          {/* Right: Actions */}
+          <div className="flex items-center gap-1.5">
+
+            {/* Theme Settings */}
+            <div ref={themeDropdownRef} className="relative">
+              <button
+                onClick={() => {
+                  setIsThemeSettingsOpen(!isThemeSettingsOpen);
+                  setIsUserDropdownOpen(false);
+                }}
+                className={`p-2 rounded-lg transition-colors ${
+                  isThemeSettingsOpen
+                    ? 'bg-muted'
+                    : 'hover:bg-muted text-muted-foreground hover:text-foreground'
+                }`}
+                style={isThemeSettingsOpen ? { color: 'var(--primary-color)' } : {}}
+              >
+                <Palette size={18} />
+              </button>
+
+              <ThemeSettings
+                isOpen={isThemeSettingsOpen}
+                onClose={() => setIsThemeSettingsOpen(false)}
+              />
+            </div>
+
+            <div className="h-5 w-px bg-border mx-1" />
+
+            {/* User Dropdown */}
+            <div ref={userDropdownRef} className="relative">
+              <button
+                onClick={() => {
+                  setIsUserDropdownOpen(!isUserDropdownOpen);
+                  setIsThemeSettingsOpen(false);
+                }}
+                className="flex items-center gap-2.5 p-1.5 pr-3 rounded-lg hover:bg-muted transition-colors"
+              >
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-semibold text-sm"
                   style={{ backgroundColor: 'var(--primary-color)' }}
                 >
                   {user?.fullname?.charAt(0).toUpperCase() || 'U'}
                 </div>
-              </div>
-           </div>
+                <div className="text-left hidden sm:block">
+                  <p className="text-sm font-medium text-foreground leading-tight">{user?.fullname || 'User'}</p>
+                  <p className="text-xs text-muted-foreground leading-tight">Admin</p>
+                </div>
+                <ChevronDown size={14} className="text-muted-foreground hidden sm:block" />
+              </button>
+
+              {/* Dropdown Menu */}
+              {isUserDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-56 bg-card border border-border rounded-xl shadow-xl z-50 py-1.5 dropdown-animate">
+                  {/* User info */}
+                  <div className="px-3 py-2.5 border-b border-border">
+                    <p className="text-sm font-semibold text-card-foreground">{user?.fullname || 'User'}</p>
+                    <p className="text-xs text-muted-foreground">{user?.email || 'user@example.com'}</p>
+                  </div>
+
+                  {/* Links */}
+                  <div className="py-1">
+                    <Link
+                      to="/settings"
+                      onClick={() => setIsUserDropdownOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 text-sm text-card-foreground hover:bg-muted transition-colors"
+                    >
+                      <User size={15} className="text-muted-foreground" />
+                      Profile & Settings
+                    </Link>
+                  </div>
+
+                  {/* Sign Out */}
+                  <div className="border-t border-border pt-1 pb-0.5">
+                    <button
+                      onClick={() => {
+                        setIsUserDropdownOpen(false);
+                        logoutMutation.mutate();
+                      }}
+                      disabled={logoutMutation.isPending}
+                      className="flex items-center gap-2.5 w-full px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors rounded-b-xl"
+                    >
+                      <LogOut size={15} />
+                      {logoutMutation.isPending ? 'Signing out...' : 'Sign Out'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </header>
 
-        {/* --- PAGE CONTENT --- */}
-        <main className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-darkBackGround transition-colors duration-300">
+        {/* ═══ PAGE CONTENT ═══ */}
+        <main className="flex-1 overflow-auto bg-background transition-colors duration-200">
           <Outlet />
         </main>
       </div>

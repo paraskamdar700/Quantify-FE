@@ -8,24 +8,54 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Dark Mode Colors
+        /* ── Theme-aware semantic tokens (CSS vars) ── */
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        card: {
+          DEFAULT: 'var(--card)',
+          foreground: 'var(--card-foreground)',
+        },
+        muted: {
+          DEFAULT: 'var(--muted)',
+          foreground: 'var(--muted-foreground)',
+        },
+        accent: {
+          DEFAULT: 'var(--accent)',
+          foreground: 'var(--accent-foreground)',
+        },
+        destructive: {
+          DEFAULT: 'var(--destructive)',
+          foreground: 'var(--destructive-foreground)',
+        },
+        border: 'var(--border)',
+        ring: 'var(--ring)',
+        input: 'var(--input-border)',
+
+        /* ── Sidebar tokens ── */
+        sidebar: {
+          DEFAULT: 'var(--sidebar-bg)',
+          border: 'var(--sidebar-border)',
+          muted: 'var(--sidebar-muted)',
+          foreground: 'var(--sidebar-foreground)',
+          'foreground-muted': 'var(--sidebar-foreground-muted)',
+        },
+
+        /* ── Header tokens ── */
+        header: {
+          DEFAULT: 'var(--header-bg)',
+          border: 'var(--header-border)',
+        },
+
+        /* ── Dynamic primary from ThemeContext ── */
         primary: 'var(--primary-color)',
-        pureBlack: '#000000',
-        darkBackGround: '#09090b',
-        darkBorder: '#272723',
-        darkText: '#A1A19B',
-        darkLeftSiderBar: '#191916',
-
-        // text colors
-        pureWhite: '#FFFFFF',
-
-        "border-subtle": {
-          DEFAULT: "#e5e7eb",
-          dark: "#374151",
-        }
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       keyframes: {
         float: {
