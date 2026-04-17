@@ -27,4 +27,7 @@ export default defineConfig({
       include: [/recharts/, /react-is/],
     },
   },
+  // server: {
+  //     allowedHosts: ["speed-belief-successfully-undertaken.trycloudflare.com"],
+  // }
 })
