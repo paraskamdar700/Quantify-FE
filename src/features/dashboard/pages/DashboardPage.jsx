@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Download, Loader } from 'lucide-react';
 import { useDashboard } from '../hooks/useDashboard';
+import { dashboardApi } from '../api/dashboardApi';
 
 // Components
 import { DashboardStatsCards } from '../components/DashboardStatsCards';
@@ -15,10 +16,23 @@ const DashboardPage = () => {
     endDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0]
   });
 
+  const [isExporting, setIsExporting] = useState(false);
+
   const { data, isLoading, isError } = useDashboard(dateRange);
 
   const handleDateChange = (e) => {
     setDateRange({ ...dateRange, [e.target.name]: e.target.value });
+  };
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      await dashboardApi.exportDashboard(dateRange);
+    } catch (err) {
+      console.error('Export failed:', err);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   if (isLoading) return (
@@ -68,10 +82,17 @@ const DashboardPage = () => {
           </div>
 
           <button
-            className="flex items-center gap-2 text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+            onClick={handleExport}
+            disabled={isExporting}
+            className="flex items-center gap-2 text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
             style={{ backgroundColor: 'var(--primary-color)' }}
           >
-            <Download size={14} /> Export
+            {isExporting ? (
+              <Loader size={14} className="animate-spin" />
+            ) : (
+              <Download size={14} />
+            )}
+            {isExporting ? 'Exporting...' : 'Export'}
           </button>
         </div>
       </div>
@@ -82,10 +103,10 @@ const DashboardPage = () => {
       {/* ── 2. CHARTS & LISTS ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-2">
-          <RevenueChart data={data?.revenueChart} />
+          <RevenueChart revenueChart={data?.revenueChart} />
         </div>
         <div className="lg:col-span-1">
-          <TopProductsList products={data?.topSelling} />
+          <TopProductsList topSelling={data?.topSelling} />
         </div>
       </div>
 
