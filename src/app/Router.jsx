@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from '../shared/components/Layout';
-import { Placeholder } from '../pages/Placeholder.jsx';
+
 
 import { LandingPage } from '../pages/LandingPage.jsx';
 import { LoginPage } from '../pages/LoginPage.jsx';
@@ -16,6 +16,8 @@ import CustomerList from '../pages/CustomerList.jsx';
 import InvoiceListPage from '../features/invoices/pages/InvoiceListPage.jsx';
 import InvoiceDetailsPage from '../features/invoices/pages/InvoiceDetailsPage.jsx';
 import SettingsPage from '../features/settings/pages/SettingsPage.jsx';
+import ReportsPage from '../features/reports/pages/ReportsPage.jsx';
+import InventoryReportPage from '../features/inventory-reports/pages/InventoryReportPage.jsx';
 
 import { ProtectedRoute } from './ProtectedRoute.jsx';
 
@@ -59,7 +61,8 @@ export const AppRouter = () => {
             <Route path=":invoiceId" element={<InvoiceDetailsPage />} />
           </Route>
           
-          <Route path="/reports" element={<Placeholder title="Reports" />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/reports/inventory" element={<InventoryReportPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           
         </Route>

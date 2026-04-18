@@ -29,7 +29,6 @@ export const StockModal = ({ isOpen, onClose, onSubmit, initialData, categories 
           category_id: initialData.category_id || ""
         });
       } else {
-        // Reset for Add Mode
         setFormData({
           stock_name: "", sku_code: "", unit: "", quantity_available: "",
           buy_price: "", weight_per_unit: "", weight_unit: "kg",
@@ -50,33 +49,35 @@ export const StockModal = ({ isOpen, onClose, onSubmit, initialData, categories 
 
   if (!isOpen) return null;
 
+  const inputClass = "w-full border border-border rounded-lg p-2 bg-card text-foreground focus:ring-2 focus:ring-[var(--primary-color)] outline-none placeholder:text-muted-foreground";
+
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl overflow-hidden">
+      <div className="bg-card rounded-xl shadow-xl w-full max-w-2xl overflow-hidden border border-border">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-          <h3 className="text-lg font-bold text-gray-900">{initialData ? "Edit Item" : "Add New Item"}</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+        <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-muted">
+          <h3 className="text-lg font-bold text-foreground">{initialData ? "Edit Item" : "Add New Item"}</h3>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
             <X size={20} />
           </button>
         </div>
         
         <form onSubmit={handleSubmit} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Item Name *</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-1">Item Name *</label>
             <input name="stock_name" value={formData.stock_name} onChange={handleChange} required 
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-slate-900/10 outline-none" />
+              className={inputClass} />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">SKU Code *</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-1">SKU Code *</label>
             <input name="sku_code" value={formData.sku_code} onChange={handleChange} required 
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-slate-900/10 outline-none" />
+              className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-1">Category *</label>
             <select name="category_id" value={formData.category_id} onChange={handleChange} required 
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-slate-900/10 outline-none bg-white">
+              className={inputClass}>
               <option value="">Select Category</option>
               {categories.map(cat => (
                 <option key={cat.id} value={cat.id}>{cat.category_name}</option>
@@ -85,47 +86,47 @@ export const StockModal = ({ isOpen, onClose, onSubmit, initialData, categories 
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Quantity *</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-1">Quantity *</label>
             <input type="number" name="quantity_available" value={formData.quantity_available} onChange={handleChange} required 
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-slate-900/10 outline-none" />
+              className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Unit (e.g. pcs) *</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-1">Unit (e.g. pcs) *</label>
             <input name="unit" value={formData.unit} onChange={handleChange} required 
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-slate-900/10 outline-none" />
+              className={inputClass} />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Buy Price *</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-1">Buy Price *</label>
             <input type="number" name="buy_price" value={formData.buy_price} onChange={handleChange} required 
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-slate-900/10 outline-none" />
+              className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Low Stock Alert</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-1">Low Stock Alert</label>
             <input type="number" name="low_unit_threshold" value={formData.low_unit_threshold} onChange={handleChange} 
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-slate-900/10 outline-none" />
+              className={inputClass} />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Weight per Unit</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-1">Weight per Unit</label>
             <input type="number" name="weight_per_unit" value={formData.weight_per_unit} onChange={handleChange} 
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-slate-900/10 outline-none" />
+              className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Weight Unit</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-1">Weight Unit</label>
             <select name="weight_unit" value={formData.weight_unit} onChange={handleChange} 
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-slate-900/10 outline-none bg-white">
+              className={inputClass}>
               <option value="kg">KG</option>
               <option value="g">G</option>
               <option value="lb">LB</option>
             </select>
           </div>
 
-          <div className="col-span-2 flex justify-end gap-3 mt-4 pt-4 border-t border-gray-100">
-            <button type="button" onClick={onClose} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+          <div className="col-span-2 flex justify-end gap-3 mt-4 pt-4 border-t border-border">
+            <button type="button" onClick={onClose} className="px-4 py-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors">
               Cancel
             </button>
-            <button type="submit" className="px-6 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800">
+            <button type="submit" className="px-6 py-2 text-white rounded-lg hover:opacity-90 transition-opacity" style={{ backgroundColor: 'var(--primary-color)' }}>
               Save Item
             </button>
           </div>

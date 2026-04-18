@@ -49,17 +49,18 @@ const CategoryManagement = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50/50 min-h-screen">
+    <div className="p-4 md:p-6 space-y-6 min-h-screen pb-20">
       
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
-          <p className="text-sm text-gray-500 mt-1">Create and manage product categories.</p>
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">Categories</h1>
+          <p className="text-sm text-muted-foreground mt-1">Create and manage product categories.</p>
         </div>
         <button 
           onClick={handleOpenAdd}
-          className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 font-medium transition-all"
+          className="text-white px-4 py-2.5 rounded-lg flex items-center gap-2 font-medium transition-all hover:opacity-90"
+          style={{ backgroundColor: 'var(--primary-color)' }}
         >
           <Plus size={18} /> Add Category
         </button>
@@ -67,15 +68,15 @@ const CategoryManagement = () => {
 
       {/* Error Banner */}
       {error && (
-        <div className="p-4 bg-red-50 text-red-700 rounded-lg border border-red-200 flex items-center gap-2">
+        <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800 flex items-center gap-2">
           <AlertCircle size={18} /> {error}
         </div>
       )}
 
       {/* Content Table */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
         <table className="w-full text-left text-sm">
-          <thead className="bg-gray-50/50 border-b border-gray-100 text-gray-500 font-medium">
+          <thead className="bg-muted border-b border-border text-muted-foreground font-medium">
             <tr>
               <th className="px-6 py-4">Name</th>
               <th className="px-6 py-4">Description</th>
@@ -83,25 +84,25 @@ const CategoryManagement = () => {
               <th className="px-6 py-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-border">
             {isLoading ? (
-               <tr><td colSpan="4" className="p-8 text-center text-gray-500 flex justify-center items-center gap-2"><Loader className="animate-spin" size={18}/> Loading...</td></tr>
+               <tr><td colSpan="4" className="p-8 text-center text-muted-foreground flex justify-center items-center gap-2"><Loader className="animate-spin" size={18}/> Loading...</td></tr>
             ) : categories.length === 0 ? (
-               <tr><td colSpan="4" className="p-8 text-center text-gray-500">No categories found. Add one to get started.</td></tr>
+               <tr><td colSpan="4" className="p-8 text-center text-muted-foreground">No categories found. Add one to get started.</td></tr>
             ) : (
               categories.map((cat) => (
-                <tr key={cat.id} className="hover:bg-gray-50/80 transition-colors">
-                  <td className="px-6 py-4 font-medium text-gray-900">{cat.category_name}</td>
-                  <td className="px-6 py-4 text-gray-500">{cat.description || '-'}</td>
-                  <td className="px-6 py-4 text-gray-500 text-xs font-mono">
+                <tr key={cat.id} className="hover:bg-muted/50 transition-colors">
+                  <td className="px-6 py-4 font-medium text-foreground">{cat.category_name}</td>
+                  <td className="px-6 py-4 text-muted-foreground">{cat.description || '-'}</td>
+                  <td className="px-6 py-4 text-muted-foreground text-xs font-mono">
                     {cat.created_by_name || 'System'}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => handleOpenEdit(cat)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors">
+                      <button onClick={() => handleOpenEdit(cat)} className="p-1.5 rounded-md hover:bg-muted transition-colors" style={{ color: 'var(--primary-color)' }}>
                         <Edit2 size={16} />
                       </button>
-                      <button onClick={() => handleDelete(cat.id)} className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors">
+                      <button onClick={() => handleDelete(cat.id)} className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-md transition-colors">
                         <Trash2 size={16} />
                       </button>
                     </div>
